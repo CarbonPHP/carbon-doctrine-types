@@ -76,7 +76,7 @@ class CarbonTypeTest extends TestCase
         self::assertSame('DATETIME(6)', $declaration);
 
         $declaration = $type->getSQLDeclaration(
-            ['secondPrecision' => true],
+            ['precision' => 0],
             $platform,
         );
 
