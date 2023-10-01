@@ -37,8 +37,6 @@ class CarbonImmutableTypeTest extends TestCase
             $type->external ?? false,
             'carbonphp/carbon-doctrine-types autoload must take precedence'
         );
-        self::assertSame('carbon_immutable', $type->getName());
-        self::assertTrue($type->requiresSQLCommentHint($platform));
         self::assertNull($type->convertToPHPValue(null, $platform));
 
         $date = $type->convertToPHPValue(new DateTimeImmutable('2000-01-01 12:00 UTC'), $platform);

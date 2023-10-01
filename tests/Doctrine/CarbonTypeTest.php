@@ -22,10 +22,8 @@ class CarbonTypeTest extends TestCase
         self::assertInstanceOf(CarbonType::class, $type);
         self::assertTrue(
             $type->external ?? false,
-            'carbonphp/carbon-doctrine-types autoload must take precedence'
+            'carbonphp/carbon-doctrine-types autoload must take precedence',
         );
-        self::assertSame('carbon', $type->getName());
-        self::assertTrue($type->requiresSQLCommentHint($platform));
         self::assertNull($type->convertToPHPValue(null, $platform));
 
         $date = $type->convertToPHPValue(new DateTime('2000-01-01 12:00 UTC'), $platform);
@@ -42,23 +40,17 @@ class CarbonTypeTest extends TestCase
 
         self::assertSame(
             '2000-01-01 12:00:00.000000',
-            $type->convertToDatabaseValue(new Carbon('2000-01-01 12:00 UTC'), $platform)
+            $type->convertToDatabaseValue(new Carbon('2000-01-01 12:00 UTC'), $platform),
         );
     }
 
     public function testConvertToDatabaseValueFailure(): void
     {
-        self::expectExceptionObject(method_exists(ConversionException::class, 'conversionFailedInvalidType')
-            ? ConversionException::conversionFailedInvalidType(
-                42,
-                'carbon',
-                ['null', 'DateTime', 'Carbon']
-            )
-            : ConversionException::conversionFailed(
-                42,
-                'carbon'
-            )
-        );
+        self::expectExceptionObject(ConversionException::conversionFailedInvalidType(
+            42,
+            'carbon',
+            ['null', 'DateTime', 'Carbon'],
+        ));
 
         [$type, $platform] = $this->getTypeAndPlatform();
         $type->convertToDatabaseValue(42, $platform);
@@ -69,7 +61,7 @@ class CarbonTypeTest extends TestCase
         self::expectExceptionObject(ConversionException::conversionFailedFormat(
             'bad date string',
             'carbon',
-            'Y-m-d H:i:s.u or any format supported by Carbon\\Carbon::parse()'
+            'Y-m-d H:i:s.u or any format supported by Carbon\\Carbon::parse()',
         ));
 
         [$type, $platform] = $this->getTypeAndPlatform();
@@ -85,7 +77,7 @@ class CarbonTypeTest extends TestCase
 
         $declaration = $type->getSQLDeclaration(
             ['secondPrecision' => true],
-            $platform
+            $platform,
         );
 
         self::assertSame('DATETIME', $declaration);
