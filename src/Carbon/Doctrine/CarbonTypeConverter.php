@@ -19,10 +19,8 @@ trait CarbonTypeConverter
      * from the ones embedded previously in nesbot/carbon source directly.
      *
      * @readonly
-     *
-     * @var bool
      */
-    public $external = true;
+    public bool $external = true;
 
     /**
      * @return class-string<T>
@@ -32,10 +30,7 @@ trait CarbonTypeConverter
         return Carbon::class;
     }
 
-    /**
-     * @return string
-     */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         $maximum = CarbonDoctrineType::MAXIMUM_PRECISION;
         $precision = ($fieldDeclaration['precision'] ?? null) ?: $maximum;
@@ -92,7 +87,7 @@ trait CarbonTypeConverter
         if (!$date) {
             throw ConversionException::conversionFailedFormat(
                 $value,
-                $this->getName(),
+                $this->getTypeName(),
                 'Y-m-d H:i:s.u or any format supported by '.$class.'::parse()',
                 $error
             );
@@ -103,10 +98,8 @@ trait CarbonTypeConverter
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     *
-     * @return string|null
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if ($value === null) {
             return $value;
@@ -116,14 +109,18 @@ trait CarbonTypeConverter
             return $value->format('Y-m-d H:i:s.u');
         }
 
-        $method = method_exists(ConversionException::class, 'conversionFailedInvalidType')
-            ? 'conversionFailedInvalidType'
-            : 'conversionFailed'; // @codeCoverageIgnore
-
-        throw ConversionException::$method(
+        throw ConversionException::conversionFailedInvalidType(
             $value,
-            $this->getName(),
+            $this->getTypeName(),
             ['null', 'DateTime', 'Carbon']
         );
+    }
+
+    private function getTypeName(): string
+    {
+        $chunks = explode('\\', static::class);
+        $type = preg_replace('/Type$/', '', end($chunks));
+
+        return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $type));
     }
 }

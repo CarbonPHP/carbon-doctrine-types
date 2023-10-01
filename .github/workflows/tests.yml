@@ -11,10 +11,9 @@ jobs:
       matrix:
         php: [ '8.1', '8.2', '8.3' ]
         carbon: [ '^2.71.0', '^3.0.0' ]
-        dbal: [ '2.1.5', '2.10.2', '^2.10.2', '~3.6.7' ]
         setup: [ 'lowest', 'stable' ]
 
-    name: PHP ${{ matrix.php }} - Carbon ${{ matrix.carbon }} - DBAL ${{ matrix.dbal }} - ${{ matrix.setup }}
+    name: PHP ${{ matrix.php }} - Carbon ${{ matrix.carbon }} - ${{ matrix.setup }}
 
     steps:
       - name: Checkout the code
@@ -31,8 +30,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-ubuntu.outputs.dir }}
-          key: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.setup }}-${{ matrix.dbal }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.setup }}-${{ matrix.dbal }}-${{ hashFiles('**/composer.json') }}
+          key: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.setup }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.setup }}-${{ hashFiles('**/composer.json') }}
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
