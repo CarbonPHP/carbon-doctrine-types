@@ -9,7 +9,8 @@ use Carbon\Doctrine\CarbonType;
 use DateTime;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Types\Exception\InvalidType;
+use Doctrine\DBAL\Types\Exception\ValueNotConvertible;
 use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\TestCase;
 
@@ -46,9 +47,9 @@ class CarbonTypeTest extends TestCase
 
     public function testConvertToDatabaseValueFailure(): void
     {
-        self::expectExceptionObject(ConversionException::conversionFailedInvalidType(
+        self::expectExceptionObject(InvalidType::new(
             42,
-            'carbon',
+            CarbonType::class,
             ['null', 'DateTime', 'Carbon'],
         ));
 
@@ -58,9 +59,9 @@ class CarbonTypeTest extends TestCase
 
     public function testConvertToPHPValueFailure(): void
     {
-        self::expectExceptionObject(ConversionException::conversionFailedFormat(
+        self::expectExceptionObject(ValueNotConvertible::new(
             'bad date string',
-            'carbon',
+            CarbonType::class,
             'Y-m-d H:i:s.u or any format supported by Carbon\\Carbon::parse()',
         ));
 

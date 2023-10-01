@@ -40,8 +40,8 @@ jobs:
           timeout_minutes: 10
           max_attempts: 3
           command: |
-            composer require --no-update --dev nesbot/carbon:${{ matrix.carbon }} doctrine/dbal:${{ matrix.dbal }}
-            composer update --prefer-dist --no-progress --prefer-${{ matrix.setup }} ${{ matrix.dbal == '2.10.2' && '--ignore-platform-req=php' || '' }}
+            composer require --no-update --dev nesbot/carbon:${{ matrix.carbon }}
+            composer update --prefer-dist --no-progress --prefer-${{ matrix.setup }}
 
       - name: Run test suite
         run: vendor/bin/phpunit --no-coverage --colors=always
