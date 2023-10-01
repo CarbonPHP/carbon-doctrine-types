@@ -14,7 +14,7 @@ jobs:
         dbal: [ '2.1.5', '2.10.2', '^2.10.2', '~3.6.7' ]
         setup: [ 'lowest', 'stable' ]
 
-    name: PHP ${{ matrix.php }} - Carbon ${{ matrix.carbon }} - DBAL ${{ matrix.dbal }} - ${{ matrix.setup }} - ubuntu
+    name: PHP ${{ matrix.php }} - Carbon ${{ matrix.carbon }} - DBAL ${{ matrix.dbal }} - ${{ matrix.setup }}
 
     steps:
       - name: Checkout the code
@@ -31,8 +31,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-ubuntu.outputs.dir }}
-          key: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.dbal }}-ubuntu-${{ hashFiles('**/composer.json') }}
-          restore-keys: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.dbal }}-ubuntu-${{ hashFiles('**/composer.json') }}
+          key: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.setup }}-${{ matrix.dbal }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: php-${{ matrix.php }}-${{ matrix.carbon }}-${{ matrix.setup }}-${{ matrix.dbal }}-${{ hashFiles('**/composer.json') }}
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
@@ -42,7 +42,7 @@ jobs:
           max_attempts: 3
           command: |
             composer require --no-update --dev nesbot/carbon:${{ matrix.carbon }} doctrine/dbal:${{ matrix.dbal }}
-            composer update --prefer-dist --no-progress --prefer-stable ${{ matrix.dbal == '2.10.2' && '--ignore-platform-req=php' || '' }}
+            composer update --prefer-dist --no-progress --prefer-${{ matrix.setup }} ${{ matrix.dbal == '2.10.2' && '--ignore-platform-req=php' || '' }}
 
       - name: Run test suite
         run: vendor/bin/phpunit --no-coverage --colors=always
