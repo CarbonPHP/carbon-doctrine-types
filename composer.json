@@ -18,7 +18,7 @@
         "phpunit/phpunit": "^10.3"
     },
     "conflict": {
-        "doctrine/dbal": "<4.0.0"
+        "doctrine/dbal": "<4.0.0 || >=5.0.0"
     },
     "license": "MIT",
     "autoload": {
