@@ -9,7 +9,7 @@ use Carbon\CarbonInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\DateTimeTzImmutableType;
 
-class CarbonTzImmutableType extends DateTimeTzImmutableType
+class CarbonTzImmutableType extends DateTimeTzImmutableType implements CarbonDoctrineType
 {
     use CarbonTypeConverter;
 
@@ -23,7 +23,7 @@ class CarbonTzImmutableType extends DateTimeTzImmutableType
         return $this->convertCarbonToDatabaseValue($value, $platform);
     }
 
-    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?CarbonInterface
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?CarbonImmutable
     {
         return $this->convertToCarbon($value, $platform);
     }
