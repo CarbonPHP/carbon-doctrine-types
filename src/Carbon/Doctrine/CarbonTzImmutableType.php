@@ -18,12 +18,12 @@ class CarbonTzImmutableType extends DateTimeTzImmutableType
         return 'carbontz_immutable';
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
+    public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
     {
         return $this->convertCarbonToDatabaseValue($value, $platform);
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?CarbonInterface
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?CarbonInterface
     {
         return $this->convertToCarbon($value, $platform);
     }
