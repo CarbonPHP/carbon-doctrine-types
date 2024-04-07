@@ -15,7 +15,9 @@ class CarbonTzImmutableTypeTest extends TestCase
 {
     protected function setUp(): void
     {
-        Type::addType('carbontz_immutable', CarbonTzImmutableType::class);
+        if (!Type::hasType('carbontz_immutable')) {
+            Type::addType('carbontz_immutable', CarbonTzImmutableType::class);
+        }
     }
 
     public function testGetName(): void
