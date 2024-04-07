@@ -15,7 +15,9 @@ class CarbonTzTypeTest extends TestCase
 {
     protected function setUp(): void
     {
-        Type::addType('carbontz', CarbonTzType::class);
+        if (!Type::hasType('carbontz')) {
+            Type::addType('carbontz', CarbonTzType::class);
+        }
     }
 
     public function testGetName(): void
