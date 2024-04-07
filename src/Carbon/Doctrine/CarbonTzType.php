@@ -9,7 +9,7 @@ use Carbon\CarbonInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\DateTimeTzType;
 
-class CarbonTzType extends DateTimeTzType
+class CarbonTzType extends DateTimeTzType implements CarbonDoctrineType
 {
     use CarbonTypeConverter;
 
