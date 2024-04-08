@@ -47,9 +47,9 @@ class CarbonTzTypeTest extends TestCase
         $databaseValue = '2023-06-08 12:34:56.789000 +02:00';
         $expectedDateTime = new DateTime('2023-06-08 12:34:56.789000', new DateTimeZone('Europe/Paris'));
 
-        $actualCarbon = $type->convertToPHPValue($databaseValue, $platform);
+        $actualDateTime = $type->convertToPHPValue($databaseValue, $platform);
 
-        $this->assertInstanceOf(Carbon::class, $actualCarbon);
-        $this->assertEquals($expectedCarbon, $actualCarbon);
+        $this->assertInstanceOf(DateTime::class, $actualDateTime);
+        $this->assertEquals($expectedDateTime, $actualDateTime);
     }
 }
