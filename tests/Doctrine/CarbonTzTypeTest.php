@@ -49,7 +49,6 @@ class CarbonTzTypeTest extends TestCase
 
         $actualCarbon = $type->convertToPHPValue($databaseValue, $platform);
 
-
         $this->assertInstanceOf(Carbon::class, $actualCarbon);
         $this->assertEquals($expectedCarbon, $actualCarbon);
     }
