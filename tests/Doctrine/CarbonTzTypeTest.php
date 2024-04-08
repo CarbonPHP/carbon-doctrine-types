@@ -45,7 +45,7 @@ class CarbonTzTypeTest extends TestCase
         $platform = $this->createMock(AbstractPlatform::class);
 
         $databaseValue = '2023-06-08 12:34:56.789000 +02:00';
-        $expectedCarbon = Carbon::parse('2023-06-08 12:34:56.789000', 'Europe/Paris');
+        $expectedDateTime = new DateTime('2023-06-08 12:34:56.789000', new DateTimeZone('Europe/Paris'));
 
         $actualCarbon = $type->convertToPHPValue($databaseValue, $platform);
 

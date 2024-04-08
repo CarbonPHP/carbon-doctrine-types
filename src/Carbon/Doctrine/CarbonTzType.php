@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Carbon\Doctrine;
 
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\DateTimeTzType;
 
@@ -26,7 +25,7 @@ class CarbonTzType extends DateTimeTzType implements CarbonDoctrineType
         return $this->convertCarbonToDatabaseValue($value, $platform);
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?CarbonInterface
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?DateTime
     {
         return $this->convertToCarbon($value, $platform);
     }
