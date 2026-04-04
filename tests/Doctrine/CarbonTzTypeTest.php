@@ -5,13 +5,27 @@ declare(strict_types=1);
 namespace Carbon\Tests\Doctrine;
 
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Carbon\Doctrine\CarbonTzType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\OraclePlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
+use Doctrine\DBAL\Platforms\SQLServerPlatform;
 use Doctrine\DBAL\Types\Type;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class CarbonTzTypeTest extends TestCase
 {
+    public static function getPlatformsSupportingDateTimeTz(): array
+    {
+        return [
+            'PostgreSQL' => [new PostgreSQLPlatform()],
+            'Oracle' => [new OraclePlatform()],
+            'SQLServer' => [new SQLServerPlatform()],
+        ];
+    }
+
     protected function setUp(): void
     {
         if (!Type::hasType('carbontz')) {
@@ -22,34 +36,33 @@ class CarbonTzTypeTest extends TestCase
     public function testGetName(): void
     {
         $type = Type::getType('carbontz');
-        $this->assertSame('carbontz', $type->getName());
+        self::assertSame('carbontz', $type->getName());
     }
 
-    public function testConvertToDatabaseValue(): void
+    #[DataProvider('getPlatformsSupportingDateTimeTz')]
+    public function testConvertToDatabaseValue(AbstractPlatform $platform): void
     {
         $type = Type::getType('carbontz');
-        $platform = $this->createMock(AbstractPlatform::class);
-        $platform->method('getDateTimeTzFormatString')->willReturn('Y-m-d H:i:s.u P');
 
-        $carbon = Carbon::parse('2023-06-08 12:34:56.789000', 'Europe/Paris');
-        $expectedDatabaseValue = '2023-06-08 12:34:56.789000 +02:00';
+        $carbon = CarbonImmutable::parse('2023-06-08 12:34:56.789000', 'Europe/Paris');
+        $expectedDatabaseValue = $carbon->format($platform->getDateTimeTzFormatString());
 
         $actualDatabaseValue = $type->convertToDatabaseValue($carbon, $platform);
 
-        $this->assertSame($expectedDatabaseValue, $actualDatabaseValue);
+        self::assertSame($expectedDatabaseValue, $actualDatabaseValue);
     }
 
-    public function testConvertToPHPValue(): void
+    #[DataProvider('getPlatformsSupportingDateTimeTz')]
+    public function testConvertToPHPValue(AbstractPlatform $platform): void
     {
         $type = Type::getType('carbontz');
-        $platform = $this->createMock(AbstractPlatform::class);
 
-        $databaseValue = '2023-06-08 12:34:56.789000 +02:00';
-        $expectedDateTime = new DateTime('2023-06-08 12:34:56.789000', new DateTimeZone('Europe/Paris'));
+        $carbon = CarbonImmutable::parse('2023-06-08 12:34:56.789000', 'Europe/Paris');
+        $databaseValue = $carbon->format($platform->getDateTimeTzFormatString());
 
-        $actualDateTime = $type->convertToPHPValue($databaseValue, $platform);
+        $date = $type->convertToPHPValue($databaseValue, $platform);
 
-        $this->assertInstanceOf(DateTime::class, $actualDateTime);
-        $this->assertEquals($expectedDateTime, $actualDateTime);
+        self::assertInstanceOf(Carbon::class, $date);
+        self::assertSame('2023-06-08 12:34:56 +02:00', $date->format('Y-m-d H:i:s P'));
     }
 }
