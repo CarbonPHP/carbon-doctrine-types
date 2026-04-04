@@ -65,7 +65,7 @@ trait CarbonTypeConverter
     public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
     {
         if ($value === null) {
-            return $value;
+            return null;
         }
 
         if ($value instanceof DateTimeInterface) {
