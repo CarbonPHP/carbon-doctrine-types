@@ -72,7 +72,7 @@ trait CarbonTypeConverter
     {
         $class = $this->getCarbonClassName();
 
-        if ($value === null || is_a($value, $class)) {
+        if ($value === null || (is_object($value) && is_a($value, $class))) {
             return $value;
         }
 
